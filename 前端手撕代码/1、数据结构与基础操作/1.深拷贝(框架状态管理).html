@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1. 深拷贝的原理 
+        // 深拷贝是指将一个对象的所有属性都递归地复制到一个新的对象中，而不仅仅是引用对象的地址。
+
+        // 2. 深拷贝的实现
+        // 2.1 递归实现
+        function deepClone(obj) {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+            let newObj = Array.isArray(obj) ? [] : {};
+            for (let key in obj) {
+                newObj[key] = deepClone(obj[key]);
+            }
+            return newObj;
+        }
+        // 2.2 非递归实现
+        function deepClone(obj) {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+            let newObj = Array.isArray(obj) ? [] : {};
+            let stack = [obj];
+            while (stack.length > 0) {
+                let cur = stack.pop();
+                if (Array.isArray(cur)) {
+                    let index = stack.indexOf(cur);
+                    if (index !== -1) {
+                        stack.splice(index, 1);
+                    }
+                } else {
+                    let index = stack.indexOf(cur);
+                    if (index !== -1) {
+                        stack.splice(index, 1);
+                    }
+                }
+            }
+            return newObj;
+        }
+
+        // 3. 深拷贝的优化
+        // 3.1 循环引用问题
+        // 循环引用是指在对象之间存在引用关系，导致深拷贝时无限无限循环。
+        // 解决循环引用问题的方法是使用哈希表记录已经访问过的对象，避免重复访问。
+        let visited = {};
+        function deepClone(obj) {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+            let newObj = Array.isArray(obj) ? [] : {};
+            visited[obj] = newObj;
+            for (let key in obj) {
+                newObj[key] = deepClone(obj[key]);
+            }
+            return newObj;
+        }
+        // 3.2 循环引用问题的优化
+        // 循环引用问题的优化是指在深拷贝时，如果遇到已经访问过的对象，直接返回已经访问过的对象，而不是递归拷贝。
+        // 这样可以避免无限循环，提高拷贝效率。
+        function deepClone(obj) {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+            let newObj = Array.isArray(obj) ? [] : {};
+            visited[obj] = newObj;
+            for (let key in obj) {
+                newObj[key] = deepClone(obj[key]);
+            }
+            return newObj;
+        }
+    </script>
+</body>
+</html>

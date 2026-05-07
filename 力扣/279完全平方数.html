@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 你想凑出 12 元
+        // 你可以先拿 1 元（平方数 1），剩下的 11 元用最优方式凑
+        // 或者先拿 4 元，剩下的 8 元用最优方式凑
+        // 或者先拿 9 元，剩下的 3 元用最优方式凑
+        // 看哪种方式总数最少
+        var numSquares = function (n) {
+            let f = new Array(n + 1).fill(0)
+
+            for (let i = 0; i <= n; i++) {
+                f[i] = i
+                // 直到平方数大于i
+                for (let j = 1; i - j * j >= 0; j++) {
+                    f[i] = Math.min(f[i], f[i - j * j] + 1)
+                }
+            }
+            return f[n]
+        };
+
+        console.log(numSquares(13));
+
+        // // i=12
+        // f[12] = 12
+        // j=1: f[12] = min(12, f[11]+1) = min(12, 3+1)=4
+        // j=2: 12-4>=0, f[12] = min(4, f[8]+1) = min(4, 2+1)=3
+        // j=3: 12-9>=0, f[12] = min(3, f[3]+1) = min(3, 3+1)=3
+        // // f[12]=3 (4+4+4)
+    </script>
+
+</body>
+
+</html>
