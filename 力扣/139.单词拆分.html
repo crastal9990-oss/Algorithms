@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var wordBreak = function (s, wordDict) {
+            let wordSet = new Set(wordDict)
+            let dp = new Array(s.length + 1).fill(false)
+            dp[0] = true //dp[i] 表示字符串 s 的前 i 个字符（即 s[0..i-1]）能否被拼接出来。
+
+            for (i = 1; i <= s.length; i++) {
+                for (j = 0; j < i; j++) {
+                    if (dp[j] && wordSet.has(s.substring(j, i))) dp[i] = true
+                }
+            }
+            return dp[s.length]
+        };
+
+        const s = "leetcode", wordDict = ["leet", "code"]
+        console.log(wordBreak(s, wordDict));
+    </script>
+</body>
+
+</html>

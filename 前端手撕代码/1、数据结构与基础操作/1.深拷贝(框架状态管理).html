@@ -7,75 +7,122 @@
 </head>
 <body>
     <script>
+        const original = {
+            name: '张三',
+            age: 25,
+            hobbies: ['读书', '游戏'],
+            address: {
+                city: '北京',
+                zip: 100000
+            }
+        }
         // 1. 深拷贝的原理 
-        // 深拷贝是指将一个对象的所有属性都递归地复制到一个新的对象中，而不仅仅是引用对象的地址。
+        // 深拷贝是指将一个对象的所有属性都递归地复制到一个新的对象中，递归复制整个对象，不会影响原对象。
+        // 需要处理的数据类型：对象、数组、函数、正则表达式、日期、时间戳、Map/Set
+        // 非处理的数据类型：基本数据类型（数字、字符串、布尔值、null、undefined、symbol、bigint）
 
         // 2. 深拷贝的实现
-        // 2.1 递归实现
-        function deepClone(obj) {
+        // 2.1 使用 JSON 方法（最简单但有局限
+        const clone = JSON.parse(JSON.stringify(original));
+        // 缺陷：
+        // ❌ 无法处理 undefined、function、symbol（会被忽略）、Date（会变成字符串）、RegExp（变成空对象 {}）
+        // ❌ 无法处理循环引用（报错）、Map/Set（变成普通对象）
+        // ❌ 无法处理循环引用（直接报错）
+        // ❌ 丢失原型链
+
+        // 2.2 递归实现（只处理普通对象/数组）
+        function deepClone1(obj) {
+            // typeof null === 'object' （对象的类型标签是 0，而 null 被表示为空指针（0x00），因此它的类型标签也被判断为 0，导致 typeof null 错误地返回 'object'），
+            // 所以需要判断 null，如果不单独处理，会误把 null 当成对象继续递归
+            // 数组是特殊的对象 typeof 数组 返回的也是 'object'
             if (typeof obj !== 'object' || obj === null) {
                 return obj;
             }
             let newObj = Array.isArray(obj) ? [] : {};
+            // for...in 遍历 obj 的所有可枚举属性（包括原型链上的）
             for (let key in obj) {
-                newObj[key] = deepClone(obj[key]);
+                newObj[key] = deepClone1(obj[key]);
             }
             return newObj;
         }
-        // 2.2 非递归实现
-        function deepClone(obj) {
+
+        const copied = deepClone1(original)
+        // 修改副本不影响原对象
+        copied.hobbies.push('游泳')
+        copied.address.city = '上海'
+        console.log(original.hobbies)   // ['读书', '游戏'] —— 没变
+        console.log(original.address.city) // '北京' —— 没变
+        console.log(copied.address.city)   // '上海'
+        // 缺陷：
+        // ❌ 没处理循环引用（栈溢出）
+        // ❌ 没处理 Date/RegExp 等特殊对象
+        // ❌ 原型链丢失
+
+        // 3. 深拷贝的优化
+        // 3.1 循环引用问题
+        // 循环引用是指在对象之间存在引用关系，导致深拷贝时无限无限循环。
+        // 例如：
+        // let obj = {};
+        // obj.self = obj;
+        // deepClone(obj); // 无限循环
+        // 解决循环引用问题的方法是使用哈希表记录已经访问过的对象，避免重复访问。
+
+
+        // 3.2 循环引用问题的优化（使用map）
+        // 循环引用问题的优化是指在深拷贝时，如果遇到已经访问过的对象，直接返回已经访问过的对象，而不是递归拷贝。
+        // 这样可以避免无限循环，提高拷贝效率。
+        function deepClone2(obj, hash = new Map()) {
             if (typeof obj !== 'object' || obj === null) {
                 return obj;
             }
+            // 处理循环引用
+            if (hash.has(obj)) {
+                return hash.get(obj);
+            }
             let newObj = Array.isArray(obj) ? [] : {};
-            let stack = [obj];
-            while (stack.length > 0) {
-                let cur = stack.pop();
-                if (Array.isArray(cur)) {
-                    let index = stack.indexOf(cur);
-                    if (index !== -1) {
-                        stack.splice(index, 1);
-                    }
-                } else {
-                    let index = stack.indexOf(cur);
-                    if (index !== -1) {
-                        stack.splice(index, 1);
-                    }
+            hash.set(obj, newObj);
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    newObj[key] = deepClone2(obj[key], hash);
                 }
             }
             return newObj;
         }
 
-        // 3. 深拷贝的优化
-        // 3.1 循环引用问题
-        // 循环引用是指在对象之间存在引用关系，导致深拷贝时无限无限循环。
-        // 解决循环引用问题的方法是使用哈希表记录已经访问过的对象，避免重复访问。
-        let visited = {};
-        function deepClone(obj) {
-            if (typeof obj !== 'object' || obj === null) {
-                return obj;
-            }
-            let newObj = Array.isArray(obj) ? [] : {};
-            visited[obj] = newObj;
-            for (let key in obj) {
-                newObj[key] = deepClone(obj[key]);
-            }
-            return newObj;
+// ----------------------------------------------------------------------------------
+        // 3.3 循环引用问题的优化（使用 WeakMap）
+        function deepClone3(obj, map = new WeakMap()) {
+            // 
+            if (obj === null || typeof obj !== 'object') return obj;
+            if (map.has(obj)) return map.get(obj); // 避免无限循环， 如果这个对象已经拷贝过，直接返回已经拷贝过的对象
+
+            // 创造克隆体并在map中记录 目的是为了后续递归拷贝时，能够直接返回已经拷贝过的对象，避免无限循环
+            const clone = Array.isArray(obj) ? [] : {};
+            map.set(obj, clone);
+
+            // 递归克隆所有属性 Object.keys(obj) 可以获取对象的所有属性名
+            Object.keys(obj).forEach(key => {
+                clone[key] = deepClone3(obj[key], map);
+            });
+            return clone;
         }
-        // 3.2 循环引用问题的优化
-        // 循环引用问题的优化是指在深拷贝时，如果遇到已经访问过的对象，直接返回已经访问过的对象，而不是递归拷贝。
-        // 这样可以避免无限循环，提高拷贝效率。
-        function deepClone(obj) {
-            if (typeof obj !== 'object' || obj === null) {
-                return obj;
-            }
-            let newObj = Array.isArray(obj) ? [] : {};
-            visited[obj] = newObj;
-            for (let key in obj) {
-                newObj[key] = deepClone(obj[key]);
-            }
-            return newObj;
-        }
+
+        const obj1 = {
+             a: 1, 
+             b: { c: 2, d: 3, }
+        };
+        const cloned11 = deepClone3(obj1);
+        cloned11.b.c = 999;
+        console.log(obj1.b.c);
+
+        // 现代浏览器内置方法（推荐）
+        //const cloned1 = structuredClone(obj)
+        // 支持：Date、RegExp、Map、Set、Array、Object、基本类型
+        // 不支持：Function、Symbol
+
+        // 或者
+        // import { cloneDeep } from 'lodash-es'
+        // const cloned2 = cloneDeep(obj)
     </script>
 </body>
 </html>
