@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //会超时 时间复杂度是 O(n·k)
+      /* var maxSlidingWindow = function (nums, k) {
+        let result = [];
+        for (let i = 0; i <= nums.length - k; i++) {
+          let newArray = nums.slice(i, i + k); // 找到窗口
+          result.push(Math.max(...newArray)); // 把窗口中的最大值放进新数组里
+        }
+        return result;
+      }; */
+
+      var maxSlidingWindow = function (nums, k) {
+        let result = []; //储存每个窗口的最大值
+        let q = []; //存储元素索引
+
+        for (let i = 0; i < nums.length; i++) {
+          // 移除窗口外的元素（之前），就是当最大值不在当前窗口中的时候，移除
+          // i - k + 1 是当前窗口的起始索引
+          //如果队首的索引小于窗口起始索引，说明它已经不在当前窗口内了，需要移除
+          if (q.length > 0 && q[0] < i - k + 1) {
+            q.shift(); //去掉数组中的第一个元素
+          }
+
+          // 移除比当前元素小的元素 因为它们在当前窗口内不可能成为最大值了
+          while (q.length > 0 && nums[q[q.length - 1]] < nums[i]) {
+            q.pop();
+          }
+
+          // 加入当前元素索引
+          q.push(i);
+
+          // 形成窗口之后 记录窗口最大值
+          // i >= k-1 表示已经形成了第一个完整窗口
+          // 队首元素就是当前窗口最大值的索引
+          if (i >= k - 1) result.push(nums[q[0]]);
+        }
+        return result;
+      };
+
+      const nums = [1, 3, -1, -3, 5, 3, 6, 7];
+      const k = 3;
+      console.log(maxSlidingWindow(nums, k));
+    </script>
+  </body>
+</html>

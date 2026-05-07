@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      var trap = function (height) {
+        let L = 0; //左指针
+        let R = height.length - 1; //右指针
+        let L_max = 0; //左边最大值
+        let R_max = 0; //右边最大值
+        let result = 0;
+
+        while (L <= R) {
+          L_max = Math.max(L_max, height[L]);
+          R_max = Math.max(R_max, height[R]);
+          //左边最大值 < 右边最大值：下标 L 处能接的雨水量等于 L_max - height[L]
+          if (L_max < R_max) {
+            result = result + (L_max - height[L]);
+            L++;
+          } else {
+            result = result + (R_max - height[R]);
+            R--;
+          }
+        }
+        return result;
+      };
+
+      const height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1];
+      console.log(trap(height));
+    </script>
+  </body>
+</html>

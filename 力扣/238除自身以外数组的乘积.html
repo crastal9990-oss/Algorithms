@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+    var productExceptSelf = function (nums) {
+      const n = nums.length
+      const re = []
+      const pre = []
+      pre[0] = 1
+      const sub = []
+      sub[n-1] = 1
+
+      for(let i = 1; i < n; i++) {
+        pre[i] = pre[i-1] * nums[i-1] 
+      }
+
+      for(let j = n-2; j >= 0; j--) {
+        sub[j] = sub[j+1] * nums[j+1]
+      }
+
+      for(let k = 0; k < n; k++ ){
+        re[k] = pre[k] * sub[k]
+      }
+      console.log(pre);
+      console.log(sub);
+      
+      return re
+    };
+
+    const nums = [-1, 1, 0, -3, 3]
+    console.log(productExceptSelf(nums));
+
+  // 时间复杂度不符合要求
+  // var productExceptSelf = function (nums) {
+  //   const re = []
+  //   let temp = 1
+  //   for (let i = 0; i < nums.length; i++) {
+  //     let temp = nums.filter((item,index) => index!==i)
+  //     re.push(temp.reduce((a,b) => a * b,1))   
+  //   }
+  //   return re
+  // };
+
+
+  
+  </script>
+</body>
+</html>

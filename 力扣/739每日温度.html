@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 超时了
+      // var dailyTemperatures = function (temperatures) {
+      //   let n = 0; //定义高温出现在第几天
+      //   let result = [];
+      //   for (let i = 0; i < temperatures.length; i++) {
+      //     n = 0;
+      //     for (let j = i + 1; j < temperatures.length; j++) {
+      //       n++;
+      //       if (temperatures[j] > temperatures[i]) {
+      //         result.push(n);
+      //         break;
+      //       } else if (
+      //         temperatures[j] <= temperatures[i] &&
+      //         j == temperatures.length - 1
+      //       ) {
+      //         result.push(0);
+      //       }
+      //     }
+      //   }
+      //   result.push(0);
+      //   return result;
+      // };
+
+      //超时了
+      // var dailyTemperatures = function (temperatures) {
+      //   let result = new Array(temperatures.length).fill(0);
+      //   for (let i = 0; i < temperatures.length; i++) {
+      //     for (let j = i + 1; j < temperatures.length; j++) {
+      //       if (temperatures[j] > temperatures[i]) {
+      //         result[i] = j - i;
+      //         break;
+      //       }
+      //     }
+      //   }
+      //   return result;
+      // };
+
+      var dailyTemperatures = function (temperatures) {
+        let res = new Array(temperatures.length).fill(0);
+        let stack = [];
+        for (let i = 0; i < temperatures.length; i++) {
+          while (
+            stack.length &&
+            temperatures[i] > temperatures[stack[stack.length - 1]]
+          ) {
+            let top = stack.length ? stack[stack.length - 1] : null;
+            res[top] = i - top;
+            stack.pop();
+          }
+          stack.push(i);
+        }
+        return res;
+      };
+
+      const temperatures = [73, 74, 75, 71, 69, 72, 76, 73];
+      console.log(dailyTemperatures(temperatures));
+    </script>
+  </body>
+</html>

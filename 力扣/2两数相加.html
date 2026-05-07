@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+   /*  const l1 = [2, 4, 3, 5, 5, 5]
+    const l2 = [5, 6, 4] */
+
+   /*  let len = l1.length > l2.length ? l1.length : l2.length
+    let cha = Math.abs(l1.length - l2.length)
+    for (i = 0; i < cha; i++) {
+      if (l1.length > l2.length) l2.push(0)
+      else if (l2.length > l1.length) l1.push(0)
+    }
+
+    let arr = []
+    for (i = 0; i < l1.length; i++) {
+      arr.push(l1[i] + l2[i])
+    }
+    let re = arr.reverse() */
+
+
+    /*  const t1 = l1.reverse().join('')  //'342'
+     const t2 = l2.reverse().join('')  //'465'
+     //let len = t1.length > t2.length ? t1.length : t2.length
+     const re = Number(t1) + Number(t2)  //807
+     let arr = []
+     let a = re
+     for (i = 1; i <= len; i++) {
+       len--
+       a = (re % 10 ** len).toFixed(0)
+       console.log(a)
+     }
+  */
+
+
+  /**
+   * Definition for singly-linked list.
+   * function ListNode(val, next) {
+   *     this.val = (val===undefined ? 0 : val)
+   *     this.next = (next===undefined ? null : next)
+   * }
+   */
+  /**
+   * @param {ListNode} l1
+   * @param {ListNode} l2
+   * @return {ListNode}
+   */
+  var addTwoNumbers = function (l1, l2) {
+    let total = l1.val + l2.val
+    let next1 = Math.floor(total / 10)
+    let res = new ListNode(total % 10)
+
+    if (l1.next !== null || l2.next !== null || next1 !== 0) {
+      l1 = l1.next ? l1.next : new ListNode(0)
+      l2 = l2.next ? l2.next : new ListNode(0)
+
+      l1.val = l1.val + next1
+      res.next = addTwoNumbers(l1, l2)
+    }
+    return res
+  };
+
+
+  </script>
+
+</body>
+
+</html>

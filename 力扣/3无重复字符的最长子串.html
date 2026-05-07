@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+/* 使用一个数组来维护滑动窗口
+  遍历字符串，判断字符是否在滑动窗口数组里
+    不在则 push 进数组
+    在则删除滑动窗口数组里相同字符及相同字符前的字符，然后将当前字符 push 进数组
+    然后将 max 更新为当前最长子串的长度
+    遍历完，返回 max 即可
+ */
+  // var lengthOfLongestSubstring = function (s) {
+  //   if (s === '') return 0
+  //   else {
+  //     let arr = [s[0]]
+  //     let max = 1
+  //     for (i = 1; i < s.length; i++) {
+  //       console.log('当前的',s[i])
+  //       arr.forEach((item, index) => {
+  //         if (item === s[i]) {
+  //           arr.splice(0, index + 1) //从索引0开始删除元素 删除index+1个
+  //           console.log('删除', arr);  
+  //         }
+  //       })
+  //       arr.push(s[i]) 
+  //       console.log('添加',arr);
+  //       max = max > arr.length ? max : arr.length
+  //     }
+  //     return max
+  //   }
+  // }; 
+
+  //indexOf()方法返回数组中第一次出现给定元素的下标，如果不存在则返回 -1。
+  var lengthOfLongestSubstring = function (s) {
+      if (s === '') return 0
+      else {
+        let arr = [s[0]]
+        let max = 1
+        for (i = 1; i < s.length; i++) {
+          let index = arr.indexOf(s[i])
+          console.log('index',index);
+          
+          if (index !== -1) {
+            console.log('有相同的 索引是：',index);
+            arr.splice(0, index + 1)
+            console.log('删除之后的',arr);
+          }
+          arr.push(s[i])
+          console.log('添加后',arr);
+          max = max > arr.length ? max : arr.length
+        }
+        return max
+      }
+
+    };
+    const a=lengthOfLongestSubstring('aab')
+    console.log(a);
+    
+
+
+    /* 
+使用 map 来存储当前已经遍历过的字符，key 为字符，value 为下标
+使用 i 来标记无重复子串开始下标，j 为当前遍历字符下标
+遍历字符串，判断当前字符是否已经在 map 中存在，
+    存在则更新无重复子串开始下标 i 为相同字符的下一位置，
+    此时从 i 到 j 为最新的无重复子串，更新 max ，将当前字符与下标放入 map 中
+*/
+  var lengthOfLongestSubstring = function (s) {
+    let map = new Map(), max = 0
+    for (let i = 0, j = 0; j < s.length; j++) {
+      if (map.has(s[j])) {
+        i = Math.max(map.get(s[j]) + 1, i)
+      }
+      max = Math.max(max, j - i + 1)
+      map.set(s[j], j)
+    }
+    return max
+  }
+  
+  </script>
+</body>
+</html>

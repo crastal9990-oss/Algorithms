@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    let nums = [2, 5, 5, 11]
+    let target = 10
+
+    let re = []
+    let y = 0
+    for (i = 0; i < nums.length - 1; i++) {
+      let temp = target - nums[i]
+      for (j = 0; j < nums.length; j++) {
+        if ((temp == nums[j]) && i != j) {
+          re.push(i, j)
+          document.write(re)
+          break
+        }
+      }
+      re = []
+    }
+
+    // 法一
+    /* var twoSum = function(nums, target) {
+    let re = []
+    let y = 0
+    for (i = 0; i < nums.length - 1; i++) {
+      let temp = target - nums[i]
+      for (j = 1; j < nums.length; j++) {
+        if (temp == nums[j]&& i != j) {
+          re.push(i, j)
+          return re
+          break
+        }
+      }
+      re = []
+    }
+} */
+
+    // 法二 哈希表
+    // map.get() 返回与指定key关联的值，若不存在关联的值，则返回undefined
+    // map.has() 返回布尔值，表明具有指定键的元素是否存在。
+/*     var twoSum = function (nums, target) {
+        const map = new Map()
+        for (i = 0; i < nums.length; i++) map.set(nums[i], i)
+        for (i = 0; i < nums.length; i++) {
+          const findNum = target - nums[i]
+          if (map.has(findNum) && map.get(findNum) !== i) return [map.get(findNum), i]
+        }
+
+      }; */
+
+  </script>
+</body>
+
+</html>

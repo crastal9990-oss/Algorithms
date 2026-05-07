@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+    var permute = function (nums) {
+      const result = []
+      const list = []
+      const map = new Map()
+      nums.forEach(item => map.set(item,false))
+
+      backtracking(nums, result, map, list)
+
+      return result
+    };
+
+    function backtracking(nums,result,map,list){
+      if(list.length === nums.length){
+       // result.push(list) //错误的 是把 list 这个数组的“引用”（或者说“指针”）放进了 result
+        result.push([...list])
+        return
+      }
+
+      for(let i = 0; i < nums.length; i++){
+        if(!map.get(nums[i])){
+          map.set(nums[i],true)
+          list.push(nums[i])
+
+          backtracking(nums, result, map, list)
+          list.pop()
+          map.set(nums[i], false)
+        }
+      }
+    }
+
+    nums = [1, 2, 3]
+    console.log(permute(nums));
+    
+  </script>
+</body>
+</html>

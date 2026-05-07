@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+
+    var isValid = function (s) {
+      const arr = ['(','{','[']
+      let stack = []
+      if(s.length === 0) return true
+      else {
+        for(i = 0; i < s.length; i++) {
+          //左边括号 入栈
+          if(arr.indexOf(s[i]) !== -1) stack.push(s[i])
+          //此时位右边括号 与栈顶第一个比较 当成对时 stack出栈最顶端元素
+          else {
+            let top = stack[stack.length-1]
+          
+            if (top === '(' && s[i] === ')') stack.pop()
+            else if (top === '[' && s[i] === ']') stack.pop()
+            else if (top === '{' && s[i] === '}') stack.pop()
+            else return false
+          }
+      }
+      //如果栈里有剩余 说明不是有效的括号
+      if(stack.length > 0) return false
+      else return true
+      }
+    };
+
+    const res = isValid("()[]{}")  //[0, 2, 1]  [0, 2, 1]
+   //const res = isValid( "([)]")  //[0,2] [0,2]
+   //const res=isValid("(){}}{")
+   console.log(res);
+    
+    
+  </script>
+</body>
+</html>

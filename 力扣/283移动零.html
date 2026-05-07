@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // var moveZeroes = function (nums) {
+      //   let temp = []; // 定义储存0的数组
+      //   let i = 0; // 定义遍历数组的索引
+      //   while (i < nums.length) {
+      //     if (nums[i] === 0) {
+      //       temp.push(0);
+      //       nums.splice(i, 1); // 删除 nums 中索引为i开始的1个数字
+      //       i = 0; // 从头开始遍历
+      //     } else i++; // 不等于0的时候 遍历数组的下一个数字
+      //   }
+
+      //   nums.push(...temp);
+      //   return nums;
+      // };
+
+      var moveZeroes = function (nums) {
+        let i = 0;
+        for (let x of nums) {
+          if (x !== 0) nums[i++] = x;
+        }
+        nums.fill(0, i);
+
+        return nums;
+      };
+
+      const nums = [0, 0, 0, 1];
+      console.log(moveZeroes(nums));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+    var merge = function (intervals) {
+      //特殊情况：没有元素或者只有一个元素时 直接返回
+      if(intervals === null || intervals.length ===0) return intervals
+
+      // 重新从小到大排序
+      intervals.sort((a,b) => a[0] - b[0])
+      let result = [intervals[0]] 
+
+      for(let i = 1; i < intervals.length; i++) {
+        let current = intervals[i]
+        let last = result[result.length - 1]
+
+        // 当前区间和结果中存放的有重叠 => 修改结果中存放的值
+        if(current[0] <= last[1]) last[1] = Math.max(current[1],last[1])
+        else result.push(current) 
+      }
+      return result
+    };
+
+    const intervals = [[1, 3], [2, 6], [8, 10], [15, 18]]
+    //const intervals = [ [2, 6], [1, 3], [8, 10], [15, 18]]
+
+    console.log(merge(intervals));
+    
+  </script>
+</body>
+</html>

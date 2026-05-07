@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+    var groupAnagrams = function (strs) {
+     let map = new Map()
+     for(let j = 0; j < strs.length; j++){
+      //对排序后的字符串生成唯一的键
+      let s = strs[j].split('').sort().join('')
+     
+      if(map.has(s)){
+        //如果map里的键和s相等 那么对应的值加入排序之前的值strs[j]
+        map.get(s).push(strs[j])
+      }
+      //如果map里没有键s 那么为当前s创建一个空值 并把排序之前的值strs[j]加入数组中 
+      else map.set(s,[strs[j]])
+     
+     }
+     //遍历结束后，Map 中所有的 values（值）就是你想要的答案。
+     return Array.from(map.values()) //将值转换为数组
+    };
+    const strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+    console.log(groupAnagrams(strs));
+    
+
+  
+    
+
+   
+  </script>
+</body>
+</html>

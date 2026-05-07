@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /*       var rotate = function (nums, k) {
+        k = k % nums.length;
+        if (k === 0) return nums;
+
+        let a = [];
+        let b = [];
+        let result = [];
+
+        // 取出后 k 个
+        for (let i = nums.length - k; i < nums.length; i++) {
+          a.push(nums[i]);
+        }
+        // 取出前 n-k 个
+        for (let j = 0; j < nums.length - k; j++) {
+          b.push(nums[j]);
+        }
+        // 将结果写回原数组
+        for (let i = 0; i < a.length; i++) {
+          nums[i] = a[i];
+        }
+        for (let j = 0; j < b.length; j++) {
+          nums[a.length + j] = b[j];
+        }
+
+        return nums;
+      }; */
+
+      var rotate = function (nums, k) {
+        let n = nums.length;
+        let newArray = [];
+
+        for (let i = 0; i < nums.length; i++) {
+          newArray[(i + k) % n] = nums[i];
+        }
+
+        for (let j = 0; j < nums.length; j++) {
+          nums[j] = newArray[j];
+        }
+
+        return nums;
+      };
+
+      const nums = [1, 2, 3, 4, 5, 6, 7];
+      const k = 3;
+      console.log(rotate(nums, k));
+    </script>
+  </body>
+</html>

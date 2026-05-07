@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+    /*题目：
+    数字 n 代表生成括号的对数，请你设计一个函数，
+    用于能够生成所有可能的并且 有效的 括号组合。 */
+
+    var generateParenthesis = function (n) {
+      let res = []
+      fn(n, res, 0, 0, '')
+      return res
+    }
+
+    const fn = (n, res, left, right, str ) => {
+      if(right > left) return  //右边括号的数量多于左边括号时 退出
+      //有效的括号 添加进res中 退出
+      if(right === left && left === n){
+        res.push(str)
+        return
+      } 
+      
+      if(left < n ) fn(n, res, left+1, right, str + '(')
+      if(left > right ) fn(n, res, left, right+1, str+')')
+
+    }
+
+    const a = generateParenthesis(3)
+    console.log(a);
+    
+
+  </script>
+</body>
+</html>

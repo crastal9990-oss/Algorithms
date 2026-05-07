@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      var threeSum = function (nums) {
+        let result = [];
+        if (nums == null || nums.length < 3) return result; // nums=[0,1] => result=[]
+        // 从小到大排序
+        nums.sort((a, b) => a - b);
+        // 遍历数组
+        for (let i = 0; i < nums.length; i++) {
+          if (nums[i] > 0) break; // 如果nums[i]大于0，则三数之和必然无法等于 0，结束循环
+          if (i > 0 && nums[i] == nums[i - 1]) continue; // 去重
+
+          let L = i + 1;
+          let R = nums.length - 1;
+          while (L < R) {
+            let sum = nums[i] + nums[L] + nums[R];
+            // sum为0时
+            if (sum === 0) {
+              result.push([nums[i], nums[L], nums[R]]);
+              while (L < R && nums[L] === nums[L + 1]) L++; // 去重（当前指针 对应的左）
+              while (L < R && nums[R] === nums[R - 1]) R--; // 去重（当前指针 对应的右）
+              // 当前指针对应的左右 同时 收缩
+              L++;
+              R--;
+            } else if (sum > 0)
+              R--; // sum大于0 说明右端值大了
+            else if (sum < 0) L++; // sum小于0 说明左端值小了
+          }
+        }
+        return result;
+      };
+
+      const nums = [0, 0, 0];
+      console.log(threeSum(nums));
+    </script>
+  </body>
+</html>
