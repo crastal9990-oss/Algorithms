@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    
+
+</head>
+<body>
+    <button>按钮点击(普通)</button>
+    <input id="search" type="text" placeholder="请输入搜索内容">
+    <br>
+    
+    <button id="btn-immediate">按钮点击 (立即执行版)</button>
+    <button id="btn-cancel">取消上述按钮的等待执行</button>
+    <br>
+    <input id="search2" type="text" placeholder="请输入搜索内容 (非立即执行)">
+
+    <script>
+        // 防抖：是一种限制函数执行频率的技术，确保在连续触发的事件中，函数只在最后一次触发后的指定时间间隔后执行一次。
+        
+        // 1 基础版防抖函数：点击不立刻生效 再点击后的 delay 秒后生效一次
+        function debounce1(fn, delay) {
+            let timer = null; // 闭包变量
+            // debounce(fn,300)时，fn 并没有执行
+            // 这里返回的函数 会执行console回调
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay);
+                // apply方法允许手动指定函数内部的this是谁，同时以数组的形式传入参数
+                // 用 button 作为 this，把事件对象传给原函数
+            };
+        }
+
+        // 按钮防抖
+        const button = document.querySelector('button')
+        button.addEventListener('click', debounce1(() => console.log('点击了按钮'), 1000));
+        
+        // 输入框实时搜索
+        const search = document.querySelector('#search')
+        const debounceSearch = debounce1(()=>{
+            console.log('输入框内容变化',search.value);
+        },300)
+        search.addEventListener('input',debounceSearch)
+
+        // 窗口resize
+        const debounceResize = debounce1(() => {
+            console.log('窗口大小变化了');
+        },300)
+        window.addEventListener('resize',debounceResize)
+
+// -------------------------------------------------------------------------------------------------        
+
+        // 2  带有 immediate 参数的防抖函数（完整版）
+        // 开启立即执行：点击立刻生效，连续狂点无效，停了 delay 秒后才能再次点击
+        // 取消立即执行：“中断当前这一次的定时器”。
+        // 非立即执行：打字停顿 delay秒 后再请求
+        function debounce2(fn, delay = 300, immediate = false) {
+            let timer = null;
+            // 这里是真正被绑定的事件回调函数
+            const _debounce = function(...args) {
+                // 每次触发都先清除之前的定时器，重新计时
+                if (timer) clearTimeout(timer);
+                if (immediate) {
+                    // 【立即执行逻辑】
+                    // 如果 timer 为空，说明是“第一次”触发，或者上一次触发的锁定时间已经过了
+                    const callNow = !timer;
+                    // 开启一个定时器，等待 delay 时间后，将 timer 清空，解除锁定
+                    timer = setTimeout(() => {
+                        timer = null;
+                    }, delay);
+
+                    // 如果判断应该立即执行，就立刻调用原函数
+                    if (callNow) {
+                        fn.apply(this, args);
+                    }
+                } else {
+                    // 【非立即执行逻辑】（也就是你原本的基础版）
+                    timer = setTimeout(() => {
+                        fn.apply(this, args);
+                    }, delay);
+                }
+            };
+
+            // 【取消功能】给返回的函数挂载一个 cancel 方法：作用仅仅是“中断当前这一次的定时器”。
+            // 对于 immediate = true 的立即执行版防抖来说，调用 cancel() 会把 timer 清空，
+            // 这意味着你的下一次点击会立刻执行，但点击完之后，它又会重新开启新的定时器，继续防抖。
+            _debounce.cancel = function() {
+                if (timer) clearTimeout(timer);
+                timer = null;
+                console.log('防抖已被手动取消');
+            };
+
+            return _debounce;
+        }
+
+        // 1. 按钮防抖（开启立即执行：点击立刻生效，连续狂点无效，停手 1 秒后才能再次点击）
+        const btnImmediate = document.querySelector('#btn-immediate');
+        const handleBtnClick = debounce2(() => {
+            console.log('🚀 按钮触发了操作！', new Date().toLocaleTimeString());
+        }, 1000, true); 
+        btnImmediate.addEventListener('click', handleBtnClick);
+
+        // 3. 输入框实时搜索（非立即执行：打字停顿 500ms 后再请求）
+        const search2 = document.querySelector('#search2');
+        const handleSearch = debounce2(function() {
+            console.log('🔍 搜索请求发送:', this.value);
+        }, 500, false);
+        search2.addEventListener('input', handleSearch);        
+
+        // 3. 取消防抖（只对“非立即执行”有用，或者在立即执行的锁定期间内解除锁定）
+        const btnCancel = document.querySelector('#btn-cancel');
+        btnCancel.addEventListener('click', () => {
+            handleBtnClick.cancel();
+        });
+
+
+
+
+    </script>
+</body>
+</html>

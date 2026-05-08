@@ -92,7 +92,7 @@
 // ----------------------------------------------------------------------------------
         // 3.3 循环引用问题的优化（使用 WeakMap）
         function deepClone3(obj, map = new WeakMap()) {
-            // 
+            
             if (obj === null || typeof obj !== 'object') return obj;
             if (map.has(obj)) return map.get(obj); // 避免无限循环， 如果这个对象已经拷贝过，直接返回已经拷贝过的对象
 

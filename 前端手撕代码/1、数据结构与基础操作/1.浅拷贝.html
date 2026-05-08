@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const original = {
+            a: 1,
+            b: { c: 2 }
+        }
+
+        // 方法1：展开运算符
+        const clone1 = { ...original }
+
+        // 方法2：Object.assign
+        const clone2 = Object.assign({}, original)
+
+        // 方法3：遍历了第一层属性，遇到引用类型时直接赋值（不继续深入）。
+        function shallowClone(obj) {
+            if (typeof obj !== 'object' || obj === null) return obj
+            const newObj = Array.isArray(obj) ? [] : {}
+            for (let key in obj) {
+                // 检查一个属性是否属于对象“自己”，而不是从“原型链”上继承来的
+                if (obj.hasOwnProperty(key)) {
+                newObj[key] = obj[key]  // 直接赋值
+                }
+            }
+            return newObj
+            }
+            
+        // 测试
+        const copy = shallowClone(original)
+        copy.b.c = 3
+        console.log(original.b.c)  // 3 ❌
+    </script>
+</body>
+</html>
