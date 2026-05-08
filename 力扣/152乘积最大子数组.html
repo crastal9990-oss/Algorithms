@@ -1,35 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <script>
-        var maxProduct = function (nums) {
-            if (nums.length === 0) return nums[0]
+      var maxProduct = function (nums) {
+        if (nums.length === 0) return nums[0];
 
-            let result = nums[0]
-            let min = nums[0]
-            let max = nums[0]
-            for (let i = 0; i < nums.length; i++) {
-                const num = nums[i]
+        const n = nums.length;
+        let max = new Array(n);
+        let min = new Array(n);
 
-                const tempMax = Math.max(num, num * max, num * min)
-                const tempMin = Math.min(num, num * max, num * min)
+        max[0] = min[0] = nums[0];
+        for (let i = 1; i < nums.length; i++) {
+          max[i] = Math.max(
+            nums[i],
+            max[i - 1] * nums[i],
+            min[i - 1] * nums[i],
+          );
+          min[i] = Math.min(
+            nums[i],
+            max[i - 1] * nums[i],
+            min[i - 1] * nums[i],
+          );
+        }
 
-                max = tempMax
-                min = tempMin
+        return Math.max(...max);
+      };
 
-                result = Math.max(result, max)
-            }
-            return result
-
-        };
+      const nums = [2, 3, -2, 4];
+      console.log(maxProduct(nums));
     </script>
-</body>
-
+  </body>
 </html>
