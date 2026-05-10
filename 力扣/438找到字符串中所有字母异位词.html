@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function isEqual(a, b) {
+        for (let i = 0; i < a.length; i++) {
+          if (a[i] !== b[i]) return false;
+        }
+        return true;
+      }
+      var findAnagrams = function (s, p) {
+        if (p.length > s.length) return [];
+
+        //长度为26的数组 索引0 => 'a', 索引1 => 'b'
+        let pCount = new Array(26).fill(0); // 记录p中每个字母出现的次数
+        let winCount = new Array(26).fill(0);
+
+        let result = [];
+
+        // 确定p 初始化第一个窗口
+        for (let i = 0; i < p.length; i++) {
+          const index = p.charCodeAt(i) - 97;
+          pCount[index]++;
+          winCount[s.charCodeAt(i) - 97]++;
+        }
+
+        if (isEqual(pCount, winCount)) result.push(0); //第一个窗口满足条件
+
+        for (let j = p.length; j < s.length; j++) {
+          const left = s.charCodeAt(j - p.length) - 97;
+          winCount[left]--; // 去掉最左边
+
+          const right = s.charCodeAt(j) - 97;
+          winCount[right]++; // 添加最右边
+
+          if (isEqual(pCount, winCount)) result.push(j - p.length + 1);
+        }
+        return result;
+      };
+
+      const s = "cbaebabacd";
+      const p = "abc";
+      console.log(findAnagrams(s, p));
+    </script>
+  </body>
+</html>
