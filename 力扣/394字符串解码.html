@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var decodeString = function(s) {
+            let stack = [] //当前栈
+            let str = '' 
+            let nums = 0 //数字
+
+            for(let i = 0; i < s.length; i++){
+                const char = s[i]
+
+                if(char >= '0' && char <= '9'){
+                    nums = nums*10 + parseInt(char) //如果是数字，更新数字，注意可能是多位数，所以要乘以10
+                }
+
+                //如果是左括号，说明要开始一个新的字符串了，把当前的数字和字符串都压入栈中
+                else if(char === '['){
+                    stack.push(nums)
+                    stack.push(str)
+                    nums = 0
+                    str = ''
+                }
+
+                //如果是右括号，说明当前字符串结束了，要把栈顶的字符串和数字弹出来，更新结果字符串
+                else if(char === ']'){
+                    const temp = stack.pop() // 之前的字符串
+                    const times = stack.pop()
+                    str = temp + str.repeat(times)
+                }
+                //[abc] => 记录abc  ( => 遇到'[' => 入栈 => str='' ) 
+                else str = str + char
+            }
+            return str
+        };
+
+        const s = "3[a]2[bc]"
+        console.log(decodeString(s));
+    </script>
+</body>
+</html>

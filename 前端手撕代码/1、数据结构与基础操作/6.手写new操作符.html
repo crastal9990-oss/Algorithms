@@ -7,18 +7,31 @@
 </head>
 <body>
     <script>
-        // 
-        function newOperator(ctor, ...args) {
-            if (typeof ctor !== 'function') {
-                throw new TypeError('Type Error');
+        function myNew(Constructor, ...args) {
+            if (typeof Constructor !== "function") {
+                throw new TypeError("Constructor must be a function");
             }
-            const obj = Object.create(ctor.prototype);
-            const res = ctor.apply(obj, args);
 
-            const isObject = typeof res === 'object' && res !== null;
-            const isFunction = typeof res === 'function';
-            return isObject || isFunction ? res : obj;
+            const instance = Object.create(Constructor.prototype);
+            const result = Constructor.apply(instance, args);
+
+            return result !== null && (typeof result === "object" || typeof result === "function")
+                ? result
+                : instance;
         }
+
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        Person.prototype.sayHi = function () {
+            console.log(`hi, I am ${this.name}, ${this.age} years old`);
+        };
+
+        const p1 = myNew(Person, "Tom", 20);
+        console.log(p1);
+        p1.sayHi();
     </script>
 </body>
 </html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var minWindow = function (s, t) {
+            if (t.length > s.length) return ''
+
+            //确定t中每一个字母需要的个数
+            let need = new Map()
+            for (let char of t) {
+                need.set(char, (need.get(char) || 0) + 1)
+            }
+
+            let left = 0
+            let right = 0
+            let required = need.size
+            let minStart = 0
+            let minLen = Infinity
+
+            let window = new Map()
+            //右窗口放大
+            while (right < s.length) {
+                const c = s[right] //当前右指针指向的字母
+                window.set(c, (window.get(c) || 0) + 1)
+
+                if (need.has(c) && window.get(c) === need.get(c)) {
+                    required--
+                }
+
+                while (required === 0) {
+                    //更新最小字串长度
+                    if (right - left + 1 < minLen) {
+                        minLen = right - left + 1
+                        minStart = left
+                    }
+                    //移除s[left]
+                    const leftchar = s[left]
+                    window.set(leftchar, window.get(leftchar) - 1)
+
+                    if (need.has(leftchar) && window.get(leftchar) < need.get(leftchar)) {
+                        required++
+                    }
+                    //左窗口右移
+                    left++
+                }
+                right++
+            }
+            return minLen === Infinity ? '' : s.substring(minStart, minStart + minLen);
+        };
+
+        const s = "AA", t = "AA"
+        console.log(minWindow(s, t));
+    </script>
+</body>
+
+</html>
