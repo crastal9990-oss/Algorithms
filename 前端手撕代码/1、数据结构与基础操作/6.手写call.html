@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        // 本质是理解 JavaScript 中 “隐式绑定” 的规则：如果把一个函数作为对象的方法来调用，那么函数内部的 this 就会指向这个对象。
+
+        // 手写call
+        Function.prototype.myCall = function(context,...args){
+            //console.log('context:',context,'args:',...args); //context: {name: 'Tom', age: 16} args: Hello
+            
+            // 处理context为null或undefined的情况，默认指向全局对象；如果是基本数据类型，用Object包装成对象
+            context = (context === null || context === undefined) ? globalThis : Object(context)
+            
+            // 为了避免函数名冲突，使用Symbol创建一个唯一的属性键
+            const fnSymbol = Symbol('fn')   // Symbol(fn)
+            
+            // 在 context 上临时创建一个属性 Symbol('fn')，它的值是 sayHi。
+            context[fnSymbol] = this // this就是sayHi函数
+
+            //console.log(context);//{name: 'Tom', age: 16, Symbol(fn): ƒ}
+
+            // 使用展开运算符传递参数并调用函数
+            const result = context[fnSymbol](...args)
+
+            // 删除临时方法，不要弄脏别人的对象
+            delete context[fnSymbol]
+
+            return result
+        }
+        //测试
+        function sayHi1(greeting){
+            console.log(`${greeting},${this.name}`);
+        }
+        const obj1 = {name:'Tom',age:16}
+        sayHi1.myCall(obj1,'Hello') // Hello, Tom
+        
+    </script>
+</body>
+</html>

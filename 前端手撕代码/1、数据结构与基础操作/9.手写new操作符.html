@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /**
+         * 手写 new
+         * @param {Function} Constructor 构造函数
+         * @param {...any} args 传递给构造函数的参数
+         */
+        function myNew(Constructor, ...args) {
+            // 1. 防御性拦截：确保传入的第一个参数是一个函数
+            if (typeof Constructor !== 'function') {
+                throw new TypeError('Constructor must be a function');
+            }
+
+            // 2. 创建新对象，并完成原型链的链接（对应原生底层步骤的 1 和 2）
+            // Object.create() 会创建一个新对象，并将该新对象的 [[Prototype]] 指定为 Constructor.prototype 参数
+            const newObj = Object.create(Constructor.prototype);
+
+            // 3. 绑定 this 并执行构造函数（对应步骤 3）
+            // 这里用 apply 把 Constructor 内部的 this 指向了 newObj
+            const result = Constructor.apply(newObj, args);
+
+            // 4. 处理返回值（对应步骤 4）
+            // 判断 result 是否是对象（且不能是 null，因为 typeof null 也是 'object'）或者是否是函数
+            const isObject = typeof result === 'object' && result !== null;
+            const isFunction = typeof result === 'function';
+
+            if (isObject || isFunction) {
+                return result; // 如果返回的是引用类型，就原样返回
+            }
+
+            return newObj; // 否则返回我们辛辛苦苦创建的实例对象
+        }
+
+        // ---------------- 测试一下 ----------------
+
+        function Animal(name, age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        Animal.prototype.sayName = function() {
+            console.log(`我是 ${this.name}`);
+        };
+
+        // 使用原生的 new
+        // const dog = new Animal('旺财', 3);
+
+        // 使用我们手写的 myNew
+        const dog = myNew(Animal, '旺财', 3);
+
+        console.log(dog.name); // 输出: 旺财
+        console.log(dog.age);  // 输出: 3
+        dog.sayName();         // 输出: 我是 旺财
+    </script>
+</body>
+</html>
