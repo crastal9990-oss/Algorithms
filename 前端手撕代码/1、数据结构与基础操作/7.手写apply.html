@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        Function.prototype.myApply = function(context,argsArray){
+            context = (context === null || context === undefined) ? globalThis : Object(context)
+            const fnSymbol = Symbol('fn')
+            context[fnSymbol] = this
+
+            let result
+            if(argsArray){
+                result = context[fnSymbol](...argsArray)
+            }else result = context[fnSymbol]()
+
+            delete context[fnSymbol]
+            return result
+        }
+        //测试
+        function sayHi2(greeting){
+            console.log(`${greeting},${this.name}`);
+        }
+        const obj2 = {name:'Jerry',age:18}
+        sayHi2.myApply(obj2,['Hi']) // Hi, Jerry
+    </script>
+</body>
+</html>

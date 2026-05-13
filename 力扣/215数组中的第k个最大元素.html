@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // var findKthLargest = function(nums, k) {
+        //     nums.sort((a,b) => b-a) //降序排序
+        //     return nums[k-1] //返回第k个最大元素  
+        // };
+
+        var findKthLargest = function (nums, k) {
+            const targetIndex = nums.length - k
+            let left = 0, right = nums.length - 1
+
+            while (true) {
+                const pivotIndex = partition(nums, left, right)
+
+                if (pivotIndex === targetIndex) {
+                    return nums[pivotIndex]
+                } else if (pivotIndex > targetIndex) {
+                    right = pivotIndex - 1
+                } else {
+                    left = pivotIndex + 1
+                }
+            }
+
+            // 快速选择算法的核心是partition函数，它会随机选择一个元素作为pivot，
+            // 并将数组分成两部分：小于pivot的元素在左边，大于pivot的元素在右边。函数返回pivot的最终位置。
+            function partition(nums, left, right) {
+                const randomIndex = left + Math.floor(Math.random() * (right - left + 1))
+                const pivot = nums[randomIndex];   // 注意这里的分号！！
+                                                   // 在 JavaScript 中，如果一行以 [、(、`（反引号）等符号开头，JavaScript 引擎不会在上一行的末尾自动插入分号，而是会将这两行连在一起解析。
+                [nums[randomIndex], nums[left]] = [nums[left], nums[randomIndex]];
+
+                let i = left + 1
+                let j = right
+
+                while (true) {
+                    
+                    while (i <= j && nums[i] < pivot) i++ 
+                    while (i <= j && nums[j] > pivot) j--
+                    if (i >= j) break
+
+                    [nums[i], nums[j]] = [nums[j], nums[i]]
+                    i++
+                    j--
+                }
+
+                [nums[left], nums[j]] = [nums[j], nums[left]]
+                return j
+            }
+        }
+
+        const nums = [3, 2, 1, 5, 6, 4]
+        const k = 2
+        console.log(findKthLargest(nums, k));
+    </script>
+</body>
+
+</html>
