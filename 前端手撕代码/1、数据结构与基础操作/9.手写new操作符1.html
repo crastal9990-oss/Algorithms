@@ -24,7 +24,8 @@
         const newObj = Object.create(Constructor.prototype);
 
         // 3. 绑定 this 并执行构造函数（对应步骤 3）
-        // 这里用 apply 把 Constructor 内部的 this 指向了 newObj
+        // “请执行 Constructor 函数，并且在执行的过程中，强制把函数里面的 this 全部替换/指向为 newObj，
+        // 同时把 args 数组里的参数传给它。”
         const result = Constructor.apply(newObj, args); //arg是['旺财', 3] result是undefined
 
         // 4. 处理返回值（对应步骤 4）

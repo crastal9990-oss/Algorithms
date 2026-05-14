@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /**
+         * 手动实现柯里化函数
+         * @param {Function} fn - 待柯里化的函数
+         * @returns {Function} - 柯里化后的函数
+         */
+        function curry(fn) {
+        // 返回一个新的函数，这个函数是柯里化后的入口
+        return function curried(...args) {
+            // 如果当前收集的参数数量已经达到了原始函数所需的参数数量
+            if (args.length >= fn.length) {
+            // 直接调用原始函数，并应用当前收集到的参数
+            return fn.apply(this, args);
+            } else {
+            // 如果参数数量不够，则返回一个新的函数
+            // 新函数会接收剩余的参数，并与之前收集的参数合并后，再次调用 curried 函数自身
+            return function(...restArgs) {
+                return curried.apply(this, args.concat(restArgs));
+            };
+            }
+        };
+        }
+
+        // 示例用法：一个简单的求和函数
+        function sum(a, b, c) {
+        return a + b + c;
+        }
+
+        // 对 sum 函数进行柯里化
+        const curriedSum = curry(sum);
+
+        // 逐步调用柯里化后的函数
+        console.log(curriedSum(1)(2)(3)); // 输出: 6
+        console.log(curriedSum(1, 2)(3)); // 输出: 6
+        console.log(curriedSum(1)(2, 3)); // 输出: 6
+        console.log(curriedSum(1, 2, 3)); // 输出: 6
+    </script>
+</body>
+</html>

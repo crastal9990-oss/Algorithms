@@ -1,0 +1,14 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "editor-browser",
+            "request": "launch",
+            "name": "Open 295数据流中的中位数.html",
+            "url": "file:///e%3A/%E6%88%91%E8%87%AA%E5%B7%B1%E7%9A%84/%E5%AD%A6%E4%B9%A0/%E5%8A%9B%E6%89%A3/295%E6%95%B0%E6%8D%AE%E6%B5%81%E4%B8%AD%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0.html"
+        }
+    ]
+}

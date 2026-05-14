@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        // 小顶堆 => 右边
+        class minHeap1 {
+            constructor() {
+                this.heap = []
+            }
+
+            size() {
+                return this.heap.length
+            }
+            peek() {
+                return this.heap[0]
+            }
+            push(val) {
+                this.heap.push(val)
+                this.bubbleUp(this.heap.length - 1);
+                // 当你在堆中添加一个新元素（push）时。新元素会先被放在数组的最后面（树的最底层），这可能会破坏小顶堆的规则。
+                // 所以我们需要让这个新元素不断和它的父节点比较，如果它比父节点小，就“浮”上去。
+            }
+
+            bubbleUp(index) {
+                // 只要还没有到达堆顶（根节点 index 为 0），就继续循环
+                while (index > 0) {
+                    // 根据公式，计算出当前节点的父节点索引
+                    const parent = Math.floor((index - 1) / 2);
+
+                    // 【核心判断】如果父节点的值已经小于或等于当前节点的值，
+                    // 说明小顶堆的规则没有被破坏，调整结束，直接 break 退出循环。
+                    if (this.heap[parent] <= this.heap[index]) break;
+
+                    // 否则（说明当前节点比父节点还小），交换当前节点和父节点的位置
+                    [this.heap[parent], this.heap[index]] = [this.heap[index], this.heap[parent]];
+
+                    // 把指针向上移动，将父节点的索引作为新的当前索引，继续下一轮向上比较
+                    index = parent;
+                }
+            }
+
+            pop() {
+                // 当你在堆中删除堆顶元素（pop）时。我们通常会把数组最后面的那个元素拿到堆顶来填补空缺。
+                // 但这会把一个很大的数放在堆顶，破坏堆的规则。所以我们需要让这个新的堆顶元素不断和它的左右子节点比较，和较小的那个子节点交换，一路“沉”下去。
+                const min = this.heap[0]
+                const last = this.heap.pop()
+                if (this.heap.length > 0) {
+                    this.heap[0] = last
+                    this.sinkDown(0)
+                }
+                return min
+            }
+
+            sinkDown(index) {
+                const length = this.heap.length;
+                while (true) {
+                    // 根据公式，算出当前节点的左右子节点索引
+                    let leftChild = 2 * index + 1;
+                    let rightChild = 2 * index + 2;
+                    let swap = null; // 用来记录“将要和哪个子节点进行交换”的索引
+                    let element = this.heap[index]; // 当前正在下沉的元素
+
+                    // 1. 先检查左子节点：
+                    // 如果左子节点没有越界，并且左子节点的值小于当前元素，
+                    // 说明我们需要交换，暂时把左子节点作为候选交换对象。
+                    if (leftChild < length && this.heap[leftChild] < element) {
+                        swap = leftChild;
+                    }
+
+                    // 2. 再检查右子节点：
+                    if (rightChild < length) {
+                        // 这个判断有点长，意思是：
+                        // 情况A：左子节点没比当前元素小（swap 还是 null），但右子节点比当前元素小。
+                        // 情况B：左子节点比当前元素小了（已经选了左边），但是右子节点比左子节点【还要小】。
+                        // 无论哪种情况，我们都应该选择和右子节点交换，因为我们要找的是左右孩子中最小的那个。
+                        if ((swap === null && this.heap[rightChild] < element) ||
+                            (swap !== null && this.heap[rightChild] < this.heap[leftChild])) {
+                            swap = rightChild;
+                        }
+                    }
+                    // 如果查了一圈，发现左右子节点都比自己大，说明当前位置已经是对的了，停止下沉。
+                    if (swap === null) break;
+
+                    // 将当前元素和选出的那个最小的子节点进行位置交换
+                    [this.heap[index], this.heap[swap]] = [this.heap[swap], this.heap[index]];
+
+                    // 把指针向下移动，准备对交换后的新位置继续进行下一轮的下沉判断
+                    index = swap;
+                }
+            }
+        }
+
+
+        // 大顶堆
+        class MaxHeap1 {
+            constructor() {
+                this.heap = new minHeap1();
+            }
+
+            size() {
+                return this.heap.size();
+            }
+
+            peek() {
+                return -this.heap.peek();
+            }
+
+            push(val) {
+                this.heap.push(-val);
+            }
+
+            pop() {
+                return -this.heap.pop();
+            }
+        }
+
+        var MedianFinder = function () {
+            this.left = new MaxHeap1() // 大顶堆 存储较小的一半 堆顶是这一半数字里最大的数字
+            this.right = new minHeap1() // 小顶堆 存储较大的一半 堆顶是这一半数字里最小的数字
+        };
+
+        /** 
+         * @param {number} num
+         * @return {void}
+         */
+        MedianFinder.prototype.addNum = function (num) {
+            // 决定插入哪个堆
+            if (this.left.size() === 0 || num <= this.left.peek()) this.left.push(num)
+            else this.right.push(num)
+
+            // 平衡两个堆
+            if (this.left.size() > this.right.size() + 1) this.right.push(this.left.pop())
+            else if (this.left.size() < this.right.size()) this.left.push(this.right.pop())
+        };
+
+        /**
+         * @return {number}
+         */
+        MedianFinder.prototype.findMedian = function () {
+            if (this.left.size() > this.right.size()) return this.left.peek()
+            else return (this.left.peek() + this.right.peek()) / 2
+        };
+
+        
+
+        //=========================法2==========================
+        var MedianFinder = function() {
+            this.left = new MaxPriorityQueue();
+            this.right = new MinPriorityQueue();
+        };
+
+        MedianFinder.prototype.addNum = function(num) {
+            if (this.left.size() === this.right.size()) {
+                this.right.enqueue(num);
+                this.left.enqueue(this.right.dequeue());
+            } else {
+                this.left.enqueue(num);
+                this.right.enqueue(this.left.dequeue());
+            }
+        };
+
+        MedianFinder.prototype.findMedian = function() {
+            if (this.left.size() > this.right.size()) {
+                return this.left.front();
+            }
+            return (this.left.front() + this.right.front()) / 2;
+        };
+
+    </script>
+</body>
+
+</html>

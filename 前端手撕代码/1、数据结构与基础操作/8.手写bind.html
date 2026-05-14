@@ -33,13 +33,35 @@
             };
         };
 
-        // 测试
-        function sayHi3(greeting) {
-            console.log(`${greeting}, ${this.name}`);
+        // ---------------- 测试用例 1：普通调用与参数拼接 ----------
+        const obj = { name: 'Gemini' };
+        function say(age, hobby) {
+            console.log(`我叫 ${this.name}，今年 ${age} 岁，喜欢 ${hobby}`);
         }
-        const obj3 = { name: 'Alice', age: 25 };
-        const boundSayHi = sayHi3.myBind(obj3, 'Hello');
-        boundSayHi(); // 输出: Hello, Alice
+
+        const boundSay = say.myBind(obj, 18);
+        boundSay('编程'); 
+        // 输出: 我叫 Gemini，今年 18 岁，喜欢 编程
+
+
+        // ---------------- 测试用例 2：【高阶测试】使用 new 调用 --------
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+        }
+        Person.prototype.sayHi = function() {
+            console.log('Hi, ' + this.name);
+        };
+
+        // 预设 name 参数为 'Alice'
+        const BoundPerson = Person.myBind({ dummy: '被忽略的对象' }, 'Alice');
+
+        // 使用 new 调用，此时 myBind 传入的 context { dummy: '...' } 会被忽略
+        const p1 = new BoundPerson(25);
+
+        console.log(p1.name); // 输出: Alice (说明参数拼接成功)
+        console.log(p1.age);  // 输出: 25
+        p1.sayHi();           // 输出: Hi, Alice (说明原型链继承成功)
     </script>
 </body>
 </html>
