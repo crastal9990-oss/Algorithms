@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 避免 setInterval 堆积的递归 setTimeout 方法
+        // 无论当前任务执行多长时间，我都要严格保证在“当前任务彻底完成”之后，再休息 100 毫秒，才去执行下一次任务。
+        
+        function recursiveTimeout() {
+        // 执行任务...
+        console.log("Executing task...");
+
+        // 模拟一个耗时操作 (> 100ms)
+        let start = Date.now();
+        while (Date.now() - start < 200);
+
+        // 任务执行完成后再调度下一个
+        setTimeout(recursiveTimeout, 100); // 永远保持100ms的间隔 (在任务完成后)
+        }
+
+        // 注释掉，避免实际运行
+        // recursiveTimeout();
+    </script>
+</body>
+</html>

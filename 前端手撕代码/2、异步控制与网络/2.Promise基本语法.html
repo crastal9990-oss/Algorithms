@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const myPromise = new Promise((resolve,reject) => {
+            // 模拟一个异步操作
+            setTimeout(()=>{
+                const success = true // 假设操作成功
+                if(success){
+                    resolve('操作成功')
+                } else {
+                    reject('操作失败')
+                }
+            }, 1000)
+        })
+
+        myPromise.then((result)=>{
+            console.log('成功'+result);
+            
+        }).catch((error)=>{
+            console.error('失败'+error);
+        })
+    </script>
+    
+</body>
+</html>
