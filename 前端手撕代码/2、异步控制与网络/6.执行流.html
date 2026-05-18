@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        console.log('=== 开始 ===')
+
+        const p = new Promise((resolve, reject) => {
+            console.log('executor 开始执行')
+            
+            // 模拟异步操作
+            setTimeout(() => {
+                console.log('异步操作完成，调用 resolve')
+                resolve('Hello Promise')
+                console.log('resolve 调用完成')
+            }, 1000)
+            
+            console.log('executor 执行结束')
+        })
+
+        console.log('Promise 创建完毕')
+
+        // 链式调用
+        p.then(result => {
+            console.log('第一个 then:', result)
+            return result + ' World'
+        }).then(result => {
+            console.log('第二个 then:', result)
+        })
+
+        console.log('=== 同步代码结束 ===')
+
+        // 输出：
+        // === 开始 ===
+        // executor 开始执行
+        // executor 执行结束
+        // Promise 创建完毕
+        // === 同步代码结束 ===
+        // (1秒后)
+        // 异步操作完成，调用 resolve
+        // resolve 调用完成
+        // 第一个 then: Hello Promise
+        // 第二个 then: Hello Promise World
+    </script>
+</body>
+</html>

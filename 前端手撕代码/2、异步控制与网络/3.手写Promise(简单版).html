@@ -11,6 +11,7 @@
     <script>
         
         class simplePromise {
+            //executor: 一个函数，接受两个参数 resolve 和 reject
             constructor(executor) {
                 this.state = 'pending'
                 this.value = undefined
@@ -48,6 +49,7 @@
                 }
             }
 
+            // 处理 Promise 成功（fulfilled）或失败（rejected）后的行为
             then(onFulfilled, onRejected) {
                 // 确保 onFulfilled 和 onRejected 是函数
                 onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v
@@ -84,11 +86,17 @@
                             handleFulfilled(this.value)
                         }, 0)
                     } else if (this.state === 'rejected') {
+                        // 如果当前 Promise 已成功，立即执行成功回调
+                        setTimeout(() => {
+                            handleFulfilled(this.value)
+                        }, 0)
+                    } else if (this.state === 'rejected') {
                         // 如果当前 Promise 已失败，立即执行失败回调
                         setTimeout(() => {
                             handleRejected(this.reason)
                         }, 0)
-                    } else {
+                    }
+                    else {
                         // this.state === 'pending'，当前 Promise 仍在等待，将回调添加到队列
                         this.onFulfilledCallbacks.push(() => {
                             setTimeout(() => handleFulfilled(this.value), 0)

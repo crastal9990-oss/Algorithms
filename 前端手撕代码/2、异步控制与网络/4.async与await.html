@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        async function fetchData(url){
+            try{
+                const response = await fetch(url) // await 等待 fetch API 返回的 Promise 解析
+                const res = await response.json()  // await 等待 response.json() 返回的 Promise 解析
+                console.log(res); // 当所有 await 完成后，才会执行到这里
+                return res // async 函数返回一个 Promise，其 resolve 值为 res
+            }catch(error){
+                // 使用 try...catch 捕获 await Promise 失败时的错误
+                console.error("获取数据时发生错误:", error);
+                throw error
+            }
+        }
+
+        fetchData('https://api.example.com/data').then((result)=>{
+            console.log('Successfully fetched:', result);
+        }).catch((err)=>{
+            // 这里捕获的是 fetchData 函数抛出的错误
+            console.log('Error during fetch process:', err);
+        })
+    </script>
+</body>
+</html>
